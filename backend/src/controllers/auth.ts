@@ -1,10 +1,11 @@
-import {RequestHandler} from "express";
-import createHttpError from "http-errors";
+import {NextFunction, RequestHandler} from "express";
 import UserModel from "../models/user";
 import bcrypt from "bcrypt";
 import * as AuthInterfaces from "../interfaces/auth";
+import {signUpValidation} from "../validations/auth/signUp";
+import {loginValidation} from "../validations/auth/login";
 
-export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
+export const getAuthenticatedUser: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
         const user = await UserModel.findById(req.session.userId).select("+email").exec();
         res.status(200).json(user);
@@ -13,34 +14,16 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
     }
 }
 
-export const signUp: RequestHandler<unknown, unknown, AuthInterfaces.SignUpInterface, unknown> = async(req, res, next) => {
+export const signUp: RequestHandler<unknown, unknown, AuthInterfaces.SignUpInterface, unknown> = async(req, res, next: NextFunction): Promise<void> => {
     const username: string = req.body.username;
     const email: string = req.body.email;
-    const passwordRaw: string = req.body.password;
-    const confirmPassword: string = req.body.confirm_password;
+    const password: string = req.body.password;
+    const confirm_password: string = req.body.confirm_password;
 
     try {
-        if (!username || !email || !passwordRaw || !confirmPassword) {
-            throw createHttpError(400, "Parameters are missing");
-        }
+        await signUpValidation({username, email, password, confirm_password});
 
-        if (passwordRaw !== confirmPassword) {
-            throw createHttpError(400, "Passwords are not the same");
-        }
-
-        const existingUsername = await UserModel.findOne({ username: username }).exec();
-
-        if (existingUsername) {
-            throw createHttpError(409, "Username already exists");
-        }
-
-        const existingEmail = await UserModel.findOne({ email: email }).exec();
-
-        if (existingEmail) {
-            throw createHttpError(409, "Email already exists");
-        }
-
-        const passwordHashed: string = await bcrypt.hash(passwordRaw, 12);
+        const passwordHashed: string = await bcrypt.hash(password, 12);
         const newUser = await UserModel.create({
             username,
             email,
@@ -55,26 +38,12 @@ export const signUp: RequestHandler<unknown, unknown, AuthInterfaces.SignUpInter
     }
 }
 
-export const login: RequestHandler<unknown, unknown, AuthInterfaces.LoginInterface, unknown> = async (req, res, next) => {
+export const login: RequestHandler<unknown, unknown, AuthInterfaces.LoginInterface, unknown> = async (req, res, next: NextFunction): Promise<void> => {
     const username: string = req.body.username;
     const password: string = req.body.password;
 
     try {
-        if (!username || !password) {
-            throw createHttpError(400, "Parameters are missing");
-        }
-
-        const user = await UserModel.findOne({ username }).select("+password +email").exec();
-
-        if (!user) {
-            throw createHttpError(401, "Invalid credentials");
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
-            throw createHttpError(401, "Invalid credentials");
-        }
+        const user = await loginValidation({username, password});
 
         req.session.userId = user._id;
         res.status(201).json(user);
@@ -83,7 +52,7 @@ export const login: RequestHandler<unknown, unknown, AuthInterfaces.LoginInterfa
     }
 }
 
-export const logout: RequestHandler = async (req, res, next) => {
+export const logout: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     req.session.destroy(error => {
         if (error) {
             next(error);
