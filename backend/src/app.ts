@@ -3,8 +3,9 @@ import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
-import env from "./util/validateEnv"
-import MongoStore from "connect-mongo"
+import MongoStore from "connect-mongo";
+import env from "./util/validateEnv";
+import AuthRoutes from "./routes/auth";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(session({
     })
 }));
 
+app.use("/api/v1/auth", AuthRoutes);
 app.use((req, res, next) => {
     next(createHttpError(404, "Endpoint not found!"));
 });
