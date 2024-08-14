@@ -6,6 +6,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import env from "./util/validateEnv";
 import AuthRoutes from "./routes/auth";
+import UserRoutes from "./routes/users";
 
 const app = express();
 
@@ -24,15 +25,16 @@ app.use(session({
 }));
 
 app.use("/api/v1/auth", AuthRoutes);
-app.use((req, res, next) => {
+app.use("/api/v1/users", UserRoutes);
+app.use((req, res, next: NextFunction) => {
     next(createHttpError(404, "Endpoint not found!"));
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+app.use((error: unknown, req: Request, res: Response, next: NextFunction): void => {
     console.error(error);
-    let errorMessage = "An unknown error occurred!";
-    let statusCode = 500;
+    let errorMessage: string = "An unknown error occurred!";
+    let statusCode: number = 500;
 
     if (isHttpError(error)) {
         statusCode = error.status;
