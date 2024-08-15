@@ -43,7 +43,7 @@ export const createUser = async ({username, email, password}: ISignUp): Promise<
 
 export const show: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
-        const user: IUser | null = await showUserValidation(req.params.id);
+        const user: IUser | null = await showUserValidation(req.params.username);
 
         res.status(200).json(user);
     } catch (error) {
@@ -53,7 +53,7 @@ export const show: RequestHandler = async (req, res, next: NextFunction): Promis
 
 export const update: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
-        const user: IUser | null = await updateUserValidation(req.body, req.body.confirm_password);
+        const user: IUser | null = await updateUserValidation(req.params.username, req.body, req.body.confirm_password);
 
         if (!user) {
             throw createHttpError(400, "User not found");
@@ -82,8 +82,13 @@ export const updateUser = async (user: IUser, {username, email, password, roles,
 
 export const deleteUser: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
-        await showUserValidation(req.body._id);
-        await UserModel.deleteOne({ _id: req.body._id }).exec();
+        const user: IUser | null = await showUserValidation(req.params.username);
+
+        if (!user) {
+            throw createHttpError(400, "User not found");
+        }
+
+        await UserModel.deleteOne({ _id: user._id }).exec();
 
         res.status(204).json();
     } catch (error) {
