@@ -1,4 +1,3 @@
-// models/userModel.ts
 import mongoose, { Model, Schema } from 'mongoose';
 import IUser from "../interfaces/user";
 

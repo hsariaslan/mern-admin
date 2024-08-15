@@ -7,6 +7,8 @@ import MongoStore from "connect-mongo";
 import env from "./util/validateEnv";
 import AuthRoutes from "./routes/auth";
 import UserRoutes from "./routes/users";
+import RoleRoutes from "./routes/roles";
+import PermissionRoutes from "./routes/permissions";
 import * as Errors from "./errors";
 
 const app = express();
@@ -27,6 +29,8 @@ app.use(session({
 
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/users", UserRoutes);
+app.use("/api/v1/roles", RoleRoutes);
+app.use("/api/v1/permissions", PermissionRoutes);
 app.use((req, res, next: NextFunction) => {
     next(Errors.endpointNotFound());
 });

@@ -7,7 +7,7 @@ const router: Router = Router();
 router.get("/", authMiddleware, UsersController.index);
 router.post("/create", authMiddleware, UsersController.create);
 router.get("/:username", authMiddleware, UsersController.show);
-router.put("/:username/update", authMiddleware, UsersController.update);
+router.patch("/:username/update", authMiddleware, UsersController.update);
 router.delete("/:username/delete", authMiddleware, UsersController.deleteUser);
 
 export default router;

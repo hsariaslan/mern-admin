@@ -1,10 +1,11 @@
-import {InferSchemaType, model, Schema} from "mongoose";
+import mongoose, { Model, Schema } from 'mongoose';
+import IPermission from "../interfaces/permission";
 
-const permissionSchema = new Schema({
+const PermissionSchema: Schema<IPermission> = new Schema({
     name: { type: String, required: true, unique: true },
-    order: { type: Number, required: true },
+    slug: { type: String, required: true, unique: true },
 });
 
-type Permission = InferSchemaType<typeof permissionSchema>
+const PermissionModel: Model<IPermission> = mongoose.model<IPermission>('Permission', PermissionSchema);
 
-export default model <Permission>("Permission", permissionSchema);
+export default PermissionModel;

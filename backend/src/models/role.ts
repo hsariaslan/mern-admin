@@ -1,11 +1,13 @@
-import {InferSchemaType, model, Schema} from "mongoose";
+import mongoose, { Model, Schema } from 'mongoose';
+import IRole from "../interfaces/role";
 
-const roleSchema = new Schema({
+const RoleSchema: Schema<IRole> = new Schema({
     name: { type: String, required: true, unique: true },
-    permissions: { type: Array, required: true },
+    slug: { type: String, required: true, unique: true },
     order: { type: Number, required: true },
+    permissions: { type: [String], required: true },
 });
 
-type Role = InferSchemaType<typeof roleSchema>
+const RoleModel: Model<IRole> = mongoose.model<IRole>('Role', RoleSchema);
 
-export default model <Role>("Role", roleSchema);
+export default RoleModel;

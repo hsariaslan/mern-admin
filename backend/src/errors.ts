@@ -19,18 +19,42 @@ export function userIsNotAuthenticated() {
     return createHttpError(401, "User is not authenticated");
 }
 
+export function notFoundError(subject: string) {
+    return createHttpError(404, subject + " not found");
+}
+
 export function userNotFound() {
-    return createHttpError(404, "User not found");
+    return notFoundError("User");
+}
+
+export function roleNotFound() {
+    return notFoundError("Role");
+}
+
+export function permissionNotFound() {
+    return notFoundError("Permission");
 }
 
 export function endpointNotFound() {
-    return createHttpError(404, "Endpoint not found");
+    return notFoundError("Endpoint");
+}
+
+export function alreadyExistsError(subject: string) {
+    return createHttpError(409, subject + " already exists");
 }
 
 export function usernameAlreadyExists() {
-    return createHttpError(409, "Username already exists");
+    return alreadyExistsError("Username");
 }
 
 export function emailAlreadyExists() {
-    return createHttpError(409, "Username already exists");
+    return alreadyExistsError("Email");
+}
+
+export function roleAlreadyExists() {
+    return alreadyExistsError("Role");
+}
+
+export function permissionAlreadyExists() {
+    return alreadyExistsError("Permission");
 }
