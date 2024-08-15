@@ -1,12 +1,13 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import morgan from "morgan";
-import createHttpError, { isHttpError } from "http-errors";
+import { isHttpError } from "http-errors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import env from "./util/validateEnv";
 import AuthRoutes from "./routes/auth";
 import UserRoutes from "./routes/users";
+import * as Errors from "./errors";
 
 const app = express();
 
@@ -27,14 +28,14 @@ app.use(session({
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/users", UserRoutes);
 app.use((req, res, next: NextFunction) => {
-    next(createHttpError(404, "Endpoint not found!"));
+    next(Errors.endpointNotFound());
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction): void => {
     console.error(error);
-    let errorMessage: string = "An unknown error occurred!";
-    let statusCode: number = 500;
+    let errorMessage: string = Errors.unknownErrorMessage;
+    let statusCode: number = Errors.unknownErrorStatusCode;
 
     if (isHttpError(error)) {
         statusCode = error.status;

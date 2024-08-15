@@ -1,5 +1,4 @@
 import {NextFunction, RequestHandler} from "express";
-import createHttpError from "http-errors";
 import UserModel from "../models/user";
 import {ISignUp} from "../interfaces/auth";
 import {signUpValidation} from "../validations/auth/signUp";
@@ -7,6 +6,7 @@ import updateUserValidation from "../validations/user/updateUser";
 import showUserValidation from "../validations/user/showUser";
 import IUser from "../interfaces/user";
 import {hashPassword} from "../util/hashPassword";
+import * as Errors from "../errors";
 
 export const index: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
@@ -56,7 +56,7 @@ export const update: RequestHandler = async (req, res, next: NextFunction): Prom
         const user: IUser | null = await updateUserValidation(req.params.username, req.body, req.body.confirm_password);
 
         if (!user) {
-            throw createHttpError(400, "User not found");
+            throw Errors.userNotFound();
         }
 
         const updatedUser: IUser = await updateUser(user, req.body);
@@ -85,7 +85,7 @@ export const deleteUser: RequestHandler = async (req, res, next: NextFunction): 
         const user: IUser | null = await showUserValidation(req.params.username);
 
         if (!user) {
-            throw createHttpError(400, "User not found");
+            throw Errors.userNotFound();
         }
 
         await UserModel.deleteOne({ _id: user._id }).exec();

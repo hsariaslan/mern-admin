@@ -1,16 +1,16 @@
-import createHttpError from "http-errors";
 import UserModel from "../../models/user";
 import IUser from "../../interfaces/user";
+import * as Errors from "../../errors";
 
 export default async (username: string): Promise<IUser | null> => {
     if (!username) {
-        throw createHttpError(400, "Parameters are missing");
+        throw Errors.missingParam();
     }
 
     const user: IUser | null = await UserModel.findOne({ username: username }).exec();
 
     if (!user) {
-        throw createHttpError(404, "User not found");
+        throw Errors.userNotFound();
     }
 
     return user;
