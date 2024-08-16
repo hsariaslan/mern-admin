@@ -8,7 +8,16 @@ import * as Errors from "../errors";
 
 export const index: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
-        const roles: IRole[] = await RoleModel.find().exec();
+        const userRoles: string[] | undefined = req.session.roles;
+        let roles: IRole[];
+
+        if (userRoles?.includes("admin")) {
+            roles = await RoleModel.find().exec();
+        } else {
+            const userRoles: string[] | undefined = req.session.roles;
+            roles = await RoleModel.find({slug: {"$in": userRoles}}).exec();
+        }
+
         res.status(200).json(roles);
     } catch (error) {
         next(error);
@@ -64,7 +73,7 @@ export const update: RequestHandler = async (req, res, next: NextFunction): Prom
     }
 }
 
-export const deleteUser: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
+export const deleteRole: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
         const role: IRole | null = await showRoleValidation(req.params.slug);
 

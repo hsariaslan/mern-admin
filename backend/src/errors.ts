@@ -19,6 +19,10 @@ export function userIsNotAuthenticated() {
     return createHttpError(401, "User is not authenticated");
 }
 
+export function userIsNotAuthorized() {
+    return createHttpError(401, "User is not authorized");
+}
+
 export function notFoundError(subject: string) {
     return createHttpError(404, subject + " not found");
 }

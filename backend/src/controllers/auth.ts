@@ -22,6 +22,8 @@ export const signUp: RequestHandler<unknown, unknown, AuthInterfaces.ISignUp, un
         const newUser: IUser = await createUser(req.body);
 
         req.session.userId = newUser._id;
+        req.session.roles = newUser.roles;
+        req.session.permissions = newUser.permissions;
         res.status(201).json(newUser);
     } catch (error) {
         next(error);
@@ -33,6 +35,8 @@ export const login: RequestHandler<unknown, unknown, AuthInterfaces.ILogin, unkn
         const user: IUser = await loginValidation(req.body);
 
         req.session.userId = user._id;
+        req.session.roles = user.roles;
+        req.session.permissions = user.permissions;
         res.status(201).json(user);
     } catch (error) {
         next(error);

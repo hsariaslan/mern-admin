@@ -8,7 +8,16 @@ import * as Errors from "../errors";
 
 export const index: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
-        const permissions: IPermission[] = await PermissionModel.find().exec();
+        const userRoles: string[] | undefined = req.session.roles;
+        let permissions: IPermission[];
+
+        if (userRoles?.includes("admin")) {
+            permissions = await PermissionModel.find().exec();
+        } else {
+            const userPermissions: string[] | undefined = req.session.permissions;
+            permissions = await PermissionModel.find({slug: {"$in": userPermissions}}).exec();
+        }
+
         res.status(200).json(permissions);
     } catch (error) {
         next(error);
@@ -60,7 +69,7 @@ export const update: RequestHandler = async (req, res, next: NextFunction): Prom
     }
 }
 
-export const deleteUser: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
+export const deletePermission: RequestHandler = async (req, res, next: NextFunction): Promise<void> => {
     try {
         const permission: IPermission | null = await showPermissionValidation(req.params.slug);
 
