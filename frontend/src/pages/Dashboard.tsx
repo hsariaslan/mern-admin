@@ -5,7 +5,7 @@ const Dashboard = () => {
         <div>
             <h1>Dashboard</h1>
             <Link to="/login" className="mx-2 hover:text-red-600 underline">Login</Link>
-            <Link to="/register" className="mx-2 hover:text-red-600 underline">Register</Link>
+            <Link to="/sign-up" className="mx-2 hover:text-red-600 underline">Sign Up</Link>
         </div>
     );
 }

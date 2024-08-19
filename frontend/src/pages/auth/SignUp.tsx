@@ -1,16 +1,16 @@
 import {useState} from "react";
 import {Link} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {ILogin} from "../../interfaces/auth";
+import {ISignUp} from "../../interfaces/auth";
 import * as AuthApi from "../../network/authApi";
 import {User} from "../../models/user";
-import {UnauthorizedError} from "../../errors/httpErrors";
+import {BadRequestError, ConflictError, UnauthorizedError} from "../../errors/httpErrors";
 import AuthTextInput from "../../components/auth/AuthTextInput";
 import AuthButton from "../../components/auth/AuthButton";
 import AuthHeader from "../../components/auth/AuthHeader";
 import Alert from "../../components/Alert";
 
-const Login = () => {
+const SignUp = () => {
     const [errorText, setErrorText] = useState<string | null>(null);
 
     const {
@@ -20,15 +20,15 @@ const Login = () => {
             errors,
             isSubmitting,
         }
-    } = useForm<ILogin>();
+    } = useForm<ISignUp>();
 
-    async function onSubmit(input: ILogin): Promise<void> {
+    async function onSubmit(input: ISignUp): Promise<void> {
         try {
             await new Promise(r => setTimeout(r, 1000));
             setErrorText(null);
-            const response: User = await AuthApi.login(input);
+            const response: User = await AuthApi.signUp(input);
         } catch (error) {
-            if (error instanceof UnauthorizedError) {
+            if (error instanceof BadRequestError || error instanceof UnauthorizedError || error instanceof ConflictError) {
                 setErrorText(error.message);
             }
 
@@ -37,9 +37,9 @@ const Login = () => {
     }
 
     return (
-        <div className="bg-stone-100">
+        <div>
             <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-                <AuthHeader text="Login to your account"/>
+                <AuthHeader text="Sign up to MERN Admin"/>
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm bg-white p-8 rounded-lg shadow-md">
                     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                         <AuthTextInput
@@ -51,6 +51,14 @@ const Login = () => {
                             error={errors.username}
                         />
                         <AuthTextInput
+                            name="email"
+                            type="email"
+                            label="Email address"
+                            register={register}
+                            registerOptions={{required: "Required"}}
+                            error={errors.email}
+                        />
+                        <AuthTextInput
                             name="password"
                             type="password"
                             label="Password"
@@ -58,17 +66,25 @@ const Login = () => {
                             registerOptions={{required: "Required"}}
                             error={errors.password}
                         />
-                        <AuthButton text="Login" type="submit" disabled={isSubmitting} />
+                        <AuthTextInput
+                            name="confirm_password"
+                            type="password"
+                            label="Confirm Password"
+                            register={register}
+                            registerOptions={{required: "Required"}}
+                            error={errors.confirm_password}
+                        />
+                        <AuthButton text="Sign Up" type="submit" disabled={isSubmitting}/>
                         {errorText && !isSubmitting &&
                             <Alert type="error" text={errorText} />
                         }
                     </form>
                 </div>
                 <p className="mt-10 text-center text-sm text-gray-500">
-                    Not a member?
-                    <Link to="/sign-up"
+                Already have an account?
+                    <Link to="/login"
                           className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500 ml-1">
-                        Sign Up
+                        Login
                     </Link>
                 </p>
             </div>
@@ -76,4 +92,4 @@ const Login = () => {
     );
 }
 
-export default Login;
+export default SignUp;
