@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {ILogin} from "../../interfaces/auth";
 import * as AuthApi from "../../network/authApi";
@@ -12,6 +12,7 @@ import Alert from "../../components/Alert";
 
 const Login = () => {
     const [errorText, setErrorText] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const {
         register,
@@ -24,9 +25,10 @@ const Login = () => {
 
     async function onSubmit(input: ILogin): Promise<void> {
         try {
-            await new Promise(r => setTimeout(r, 1000));
             setErrorText(null);
+            await new Promise(r => setTimeout(r, 1000));
             const response: User = await AuthApi.login(input);
+            navigate("/");
         } catch (error) {
             if (error instanceof UnauthorizedError) {
                 setErrorText(error.message);

@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {ISignUp} from "../../interfaces/auth";
 import * as AuthApi from "../../network/authApi";
@@ -12,6 +12,7 @@ import Alert from "../../components/Alert";
 
 const SignUp = () => {
     const [errorText, setErrorText] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const {
         register,
@@ -27,6 +28,7 @@ const SignUp = () => {
             await new Promise(r => setTimeout(r, 1000));
             setErrorText(null);
             const response: User = await AuthApi.signUp(input);
+            navigate("/");
         } catch (error) {
             if (error instanceof BadRequestError || error instanceof UnauthorizedError || error instanceof ConflictError) {
                 setErrorText(error.message);
