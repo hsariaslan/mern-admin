@@ -1,13 +1,13 @@
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {ISignUp} from "../../interfaces/auth";
-import * as AuthApi from "../../network/authApi";
-import {User} from "../../models/user";
+import {ISignUp} from "./interfaces/ISignUp";
+import * as AuthApi from "../../services/authApi";
+import {IUser} from "../common/interfaces/IUser";
 import {BadRequestError, ConflictError, UnauthorizedError} from "../../errors/httpErrors";
-import AuthTextInput from "../../components/auth/AuthTextInput";
-import AuthButton from "../../components/auth/AuthButton";
-import AuthHeader from "../../components/auth/AuthHeader";
+import AuthTextInput from "./components/AuthTextInput";
+import AuthButton from "./components/AuthButton";
+import AuthHeader from "./components/AuthHeader";
 import Alert from "../../components/Alert";
 
 const SignUp = () => {
@@ -27,7 +27,7 @@ const SignUp = () => {
         try {
             await new Promise(r => setTimeout(r, 1000));
             setErrorText(null);
-            const response: User = await AuthApi.signUp(input);
+            const response: IUser = await AuthApi.signUp(input);
             navigate("/");
         } catch (error) {
             if (error instanceof BadRequestError || error instanceof UnauthorizedError || error instanceof ConflictError) {

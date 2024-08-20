@@ -1,13 +1,13 @@
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
-import {ILogin} from "../../interfaces/auth";
-import * as AuthApi from "../../network/authApi";
-import {User} from "../../models/user";
+import {ILogin} from "./interfaces/ILogin";
+import * as AuthApi from "../../services/authApi";
+import {IUser} from "../common/interfaces/IUser";
 import {UnauthorizedError} from "../../errors/httpErrors";
-import AuthTextInput from "../../components/auth/AuthTextInput";
-import AuthButton from "../../components/auth/AuthButton";
-import AuthHeader from "../../components/auth/AuthHeader";
+import AuthTextInput from "./components/AuthTextInput";
+import AuthButton from "./components/AuthButton";
+import AuthHeader from "./components/AuthHeader";
 import Alert from "../../components/Alert";
 
 const Login = () => {
@@ -27,7 +27,7 @@ const Login = () => {
         try {
             setErrorText(null);
             await new Promise(r => setTimeout(r, 1000));
-            const response: User = await AuthApi.login(input);
+            const response: IUser = await AuthApi.login(input);
             navigate("/");
         } catch (error) {
             if (error instanceof UnauthorizedError) {

@@ -1,7 +1,4 @@
-export interface ILogin {
-    username: string;
-    password: string;
-}
+import {ILogin} from "./ILogin";
 
 export interface ISignUp extends ILogin {
     email: string;

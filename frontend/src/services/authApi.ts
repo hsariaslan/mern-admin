@@ -1,10 +1,11 @@
 import fetchData from "./fetchData";
-import {ILogin, ISignUp} from "../interfaces/auth";
-import {User} from "../models/user";
+import {ILogin} from "../features/auth/interfaces/ILogin";
+import {ISignUp} from "../features/auth/interfaces/ISignUp";
+import {IUser} from "../features/common/interfaces/IUser";
 
 const apiPrefix: string | undefined = process.env.REACT_APP_API_PREFIX;
 
-export async function signUp(credentials: ISignUp): Promise<User> {
+export async function signUp(credentials: ISignUp): Promise<IUser> {
     const response: Response = await fetchData(apiPrefix + "/auth/signup", {
         method: "POST",
         body: JSON.stringify(credentials),
@@ -16,7 +17,7 @@ export async function signUp(credentials: ISignUp): Promise<User> {
     return response.json();
 }
 
-export async function login(credentials: ILogin): Promise<User> {
+export async function login(credentials: ILogin): Promise<IUser> {
     console.log(credentials);
     const response: Response = await fetchData(apiPrefix + "/auth/login", {
         method: "POST",
@@ -29,7 +30,7 @@ export async function login(credentials: ILogin): Promise<User> {
     return response.json();
 }
 
-export async function logout(): Promise<User> {
+export async function logout(): Promise<IUser> {
     const response: Response = await fetchData(apiPrefix + "/auth/logout", {
         method: "POST",
         headers: {
