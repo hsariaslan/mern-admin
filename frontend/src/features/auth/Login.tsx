@@ -1,18 +1,30 @@
-import {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
+import {Link, NavigateFunction, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
+import {AppDispatch} from "../../app/store";
+import {login} from './authSlice';
 import {ILogin} from "./interfaces/ILogin";
-import * as AuthApi from "../../services/authApi";
 import {IUser} from "../common/interfaces/IUser";
+import * as AuthApi from "../../services/authApi";
 import {UnauthorizedError} from "../../errors/httpErrors";
+import Alert from "../../components/Alert";
 import AuthTextInput from "./components/AuthTextInput";
 import AuthButton from "./components/AuthButton";
 import AuthHeader from "./components/AuthHeader";
-import Alert from "../../components/Alert";
 
 const Login = () => {
+    const isAuthenticated: boolean = !!localStorage.getItem("mernUser");
+    const navigate: NavigateFunction = useNavigate();
+
+    useEffect((): void => {
+        if (isAuthenticated) {
+            navigate("/");
+        }
+    }, []);
+
+    const dispatch: AppDispatch = useDispatch();
     const [errorText, setErrorText] = useState<string | null>(null);
-    const navigate = useNavigate();
 
     const {
         register,
@@ -26,8 +38,15 @@ const Login = () => {
     async function onSubmit(input: ILogin): Promise<void> {
         try {
             setErrorText(null);
-            await new Promise(r => setTimeout(r, 1000));
-            const response: IUser = await AuthApi.login(input);
+            await new Promise(r => setTimeout(r, 1000)); // just to see loading spin on button
+            const loggedInUser: IUser = await AuthApi.login(input);
+            dispatch(login(loggedInUser));
+            localStorage.setItem("mernUser", JSON.stringify({
+                username: loggedInUser.username,
+                email: loggedInUser.email,
+                roles: loggedInUser.roles,
+                permissions: loggedInUser.permissions,
+            }));
             navigate("/");
         } catch (error) {
             if (error instanceof UnauthorizedError) {

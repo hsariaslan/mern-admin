@@ -1,18 +1,30 @@
-import {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
+import {Link, NavigateFunction, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
+import {AppDispatch} from "../../app/store";
+import {login} from './authSlice';
 import {ISignUp} from "./interfaces/ISignUp";
-import * as AuthApi from "../../services/authApi";
 import {IUser} from "../common/interfaces/IUser";
+import * as AuthApi from "../../services/authApi";
 import {BadRequestError, ConflictError, UnauthorizedError} from "../../errors/httpErrors";
+import Alert from "../../components/Alert";
 import AuthTextInput from "./components/AuthTextInput";
 import AuthButton from "./components/AuthButton";
 import AuthHeader from "./components/AuthHeader";
-import Alert from "../../components/Alert";
 
 const SignUp = () => {
+    const isAuthenticated: boolean = !!localStorage.getItem("mernUser");
+    const navigate: NavigateFunction = useNavigate();
+
+    useEffect((): void => {
+        if (isAuthenticated) {
+            navigate("/");
+        }
+    }, []);
+
+    const dispatch: AppDispatch = useDispatch();
     const [errorText, setErrorText] = useState<string | null>(null);
-    const navigate = useNavigate();
 
     const {
         register,
@@ -25,9 +37,16 @@ const SignUp = () => {
 
     async function onSubmit(input: ISignUp): Promise<void> {
         try {
-            await new Promise(r => setTimeout(r, 1000));
             setErrorText(null);
-            const response: IUser = await AuthApi.signUp(input);
+            await new Promise(r => setTimeout(r, 1000)); // just to see loading spin on button
+            const loggedInUser: IUser = await AuthApi.signUp(input);
+            dispatch(login(loggedInUser));
+            localStorage.setItem("mernUser", JSON.stringify({
+                username: loggedInUser.username,
+                email: loggedInUser.email,
+                roles: loggedInUser.roles,
+                permissions: loggedInUser.permissions,
+            }));
             navigate("/");
         } catch (error) {
             if (error instanceof BadRequestError || error instanceof UnauthorizedError || error instanceof ConflictError) {

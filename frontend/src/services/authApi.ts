@@ -18,7 +18,6 @@ export async function signUp(credentials: ISignUp): Promise<IUser> {
 }
 
 export async function login(credentials: ILogin): Promise<IUser> {
-    console.log(credentials);
     const response: Response = await fetchData(apiPrefix + "/auth/login", {
         method: "POST",
         body: JSON.stringify(credentials),
