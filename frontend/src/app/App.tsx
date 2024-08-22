@@ -3,6 +3,7 @@ import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Login from "../features/auth/Login";
 import SignUp from "../features/auth/SignUp";
+import UsersIndex from "../features/users/index";
 
 function App() {
     return (
@@ -15,6 +16,11 @@ function App() {
                 }/>
                 <Route path="/login" element={<Login />}/>
                 <Route path="/sign-up" element={<SignUp />}/>
+                <Route path="/users" element={
+                    <AuthMiddleware>
+                        <UsersIndex />
+                    </AuthMiddleware>
+                }/>
             </Routes>
         </BrowserRouter>
     );

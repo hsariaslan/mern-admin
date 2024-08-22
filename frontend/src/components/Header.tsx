@@ -7,18 +7,22 @@ import {IUser} from "../features/common/interfaces/IUser";
 import {logout} from "../features/auth/authSlice";
 
 const user: IUser | null = JSON.parse(localStorage.getItem("mernUser") as string) as IUser;
-const navigation = [
-    { name: 'Dashboard', href: '/', current: true },
-    { name: 'Users', href: '/users', current: false },
-    { name: 'Roles', href: '/roles', current: false },
-    { name: 'Permissions', href: '/permissions', current: false },
-]
 
-function classNames(...classes: any[]) {
+function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function Header() {
+interface HeaderProps {
+    currentPage: string;
+}
+
+export default function Header({currentPage}: HeaderProps) {
+    const navigation = [
+        { name: 'Dashboard', href: '/', current: currentPage === 'dashboard' },
+        { name: 'Users', href: '/users', current: currentPage === 'users' },
+        { name: 'Roles', href: '/roles', current: currentPage === 'roles' },
+        { name: 'Permissions', href: '/permissions', current: currentPage === 'permissions' },
+    ]
     const dispatch: AppDispatch = useDispatch();
     const navigate: NavigateFunction = useNavigate();
 
