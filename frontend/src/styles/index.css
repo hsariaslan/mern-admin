@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.th {
+    @apply border-r px-6 py-4 dark:border-neutral-500;
+}
+
+.td {
+    @apply whitespace-nowrap border-r px-6 py-4 dark:border-neutral-500;
+}
+
+.button-primary {
+    @apply flex w-full justify-center items-center rounded-md bg-indigo-600 px-3 py-2
+    leading-6 text-white shadow-sm enabled:hover:bg-indigo-700 focus-visible:outline
+    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600
+    disabled:disabled:opacity-50 min-w-24 transition ease-in-out duration-200
+}

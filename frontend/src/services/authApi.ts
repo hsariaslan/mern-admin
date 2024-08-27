@@ -3,7 +3,7 @@ import {ILogin} from "../features/auth/interfaces/ILogin";
 import {ISignUp} from "../features/auth/interfaces/ISignUp";
 import {IUser} from "../features/common/interfaces/IUser";
 
-const apiPrefix: string | undefined = process.env.REACT_APP_API_PREFIX;
+const apiPrefix: string = process.env.REACT_APP_API_PREFIX as string;
 
 export async function signUp(credentials: ISignUp): Promise<IUser> {
     const response: Response = await fetchData(apiPrefix + "/auth/signup", {

@@ -10,11 +10,11 @@ import * as AuthApi from "../../services/authApi";
 import {BadRequestError, ConflictError, UnauthorizedError} from "../../errors/httpErrors";
 import Alert from "../../components/Alert";
 import AuthTextInput from "./components/AuthTextInput";
-import AuthButton from "./components/AuthButton";
+import ButtonWithSpinner from "../../components/ButtonWithSpinner";
 import AuthHeader from "./components/AuthHeader";
 
 const SignUp = () => {
-    const isAuthenticated: boolean = !!localStorage.getItem("mernUser");
+    const isAuthenticated: boolean = !!sessionStorage.getItem("mernUser");
     const navigate: NavigateFunction = useNavigate();
 
     useEffect((): void => {
@@ -41,7 +41,7 @@ const SignUp = () => {
             await new Promise(r => setTimeout(r, 1000)); // just to see loading spin on button
             const loggedInUser: IUser = await AuthApi.signUp(input);
             dispatch(login(loggedInUser));
-            localStorage.setItem("mernUser", JSON.stringify({
+            sessionStorage.setItem("mernUser", JSON.stringify({
                 username: loggedInUser.username,
                 email: loggedInUser.email,
                 roles: loggedInUser.roles,
@@ -95,7 +95,7 @@ const SignUp = () => {
                             registerOptions={{required: "Required"}}
                             error={errors.confirm_password}
                         />
-                        <AuthButton text="Sign Up" type="submit" disabled={isSubmitting}/>
+                        <ButtonWithSpinner text="Sign Up" type="submit" disabled={isSubmitting}/>
                         {errorText && !isSubmitting &&
                             <Alert type="error" text={errorText} />
                         }

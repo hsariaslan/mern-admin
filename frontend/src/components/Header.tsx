@@ -6,7 +6,7 @@ import {AppDispatch} from "../app/store";
 import {IUser} from "../features/common/interfaces/IUser";
 import {logout} from "../features/auth/authSlice";
 
-const user: IUser | null = JSON.parse(localStorage.getItem("mernUser") as string) as IUser;
+const user: IUser | null = JSON.parse(sessionStorage.getItem("mernUser") as string) as IUser;
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
@@ -28,7 +28,7 @@ export default function Header({currentPage}: HeaderProps) {
 
     const handleLogout = (): void => {
         dispatch(logout());
-        localStorage.removeItem("mernUser");
+        sessionStorage.removeItem("mernUser");
         navigate("/login");
     }
 
@@ -136,12 +136,6 @@ export default function Header({currentPage}: HeaderProps) {
                         </div>
                     </DisclosurePanel>
                 </Disclosure>
-
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
-                    </div>
-                </header>
             </div>
         </>
     )

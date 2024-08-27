@@ -27,7 +27,7 @@ function App() {
 }
 
 export const AuthMiddleware = ({children}: any) => {
-    if (localStorage.getItem("mernUser")) {
+    if (sessionStorage.getItem("mernUser")) {
         return children;
     } else {
         return <Navigate to="/login" />;

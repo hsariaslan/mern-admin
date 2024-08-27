@@ -2,7 +2,7 @@ import {IUser} from "../features/common/interfaces/IUser";
 import Header from "../components/Header";
 
 const Dashboard = () => {
-    const user: IUser | null = JSON.parse(localStorage.getItem("mernUser") as string) as IUser;
+    const user: IUser | null = JSON.parse(sessionStorage.getItem("mernUser") as string) as IUser;
 
     return (
         <div>
