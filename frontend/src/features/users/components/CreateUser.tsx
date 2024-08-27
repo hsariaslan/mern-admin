@@ -45,7 +45,7 @@ const CreateUser = ({onDismiss, onCreateUser}: CreateUserProps) => {
                 form: "createUserForm",
                 disabled: isSubmitting,
                 type: "submit",
-                isButtonWithSpinner: true,
+                isbuttonwithspinner: true,
             }}
             onDismiss={onDismiss}
             onConfirm={() => {}}

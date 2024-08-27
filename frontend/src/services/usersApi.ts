@@ -29,7 +29,7 @@ export async function show(username: string): Promise<UserModel> {
 
 export async function update(username: string, credentials: UserModel): Promise<UserModel> {
     const response: Response = await fetchData(apiPrefix + "/users/" + username + "/update", {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify(credentials),
         headers: {
             "Content-Type": "application/json",

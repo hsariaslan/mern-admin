@@ -12,7 +12,7 @@ interface ModalComponentProps {
         form?: string,
         disabled: boolean,
         type?: "button" | "submit" | "reset",
-        isButtonWithSpinner?: boolean,
+        isbuttonwithspinner?: boolean,
     },
     cancelButton?: {
         text: string,
@@ -46,7 +46,7 @@ export default function ModalComponent({
                     <Button variant={cancelButton?.variant ?? "secondary"} onClick={onDismiss} className="py-1.5 h-10">
                         {cancelButton?.text ?? "Cancel"}
                     </Button>
-                    {confirmButton?.isButtonWithSpinner
+                    {confirmButton?.isbuttonwithspinner
                         ? <ButtonWithSpinner
                             {...confirmButton}
                             type={confirmButton.type ?? "button"}

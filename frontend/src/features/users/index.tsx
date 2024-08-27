@@ -5,15 +5,17 @@ import * as UsersApi from "../../services/usersApi";
 import UserModel from "./User";
 import Header from "../../components/Header";
 import ModalComponent from "../../components/Modal";
-import CreateUser from "./components/createUser";
+import CreateUser from "./components/CreateUser";
+import UpdateUser from "./components/UpdateUser";
 
 const UsersIndex = () => {
     const [users, setUsers] = useState<UserModel[]>([]);
     const [showLoading, setShowLoading] = useState(false);
     const [showLoadingError, setShowLoadingError] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-    const [deletingUser, setDeletingUser] = useState<UserModel | null>(null);
+    const [operatingUser, setOperatingUser] = useState<UserModel | null>(null);
 
     useEffect(() => {
         async function getUsers(): Promise<void> {
@@ -36,16 +38,16 @@ const UsersIndex = () => {
     }, []);
 
     async function deleteUser(): Promise<void> {
-        if (deletingUser) {
+        if (operatingUser) {
             try {
-                await UsersApi.deleteUser(deletingUser.username);
-                setUsers(users.filter((existingUser: UserModel): boolean => existingUser._id !== deletingUser._id));
+                await UsersApi.deleteUser(operatingUser.username);
+                setUsers(users.filter((existingUser: UserModel): boolean => existingUser._id !== operatingUser._id));
             } catch (error) {
                 console.log(error);
             }
         }
 
-        setDeletingUser(null);
+        setOperatingUser(null);
         setShowDeleteAlert(false);
     }
 
@@ -97,14 +99,19 @@ const UsersIndex = () => {
                                                         <td className="td">
                                                             <div className="flex items-center h-full gap-2">
                                                                 <button
-                                                                    className="opacity-50">
+                                                                    className="opacity-50"
+                                                                    onClick={() => {
+                                                                        setShowUpdateModal(true)
+                                                                        setOperatingUser(user)
+                                                                    }}
+                                                                >
                                                                     <PencilSquareIcon width="20" height="20"/>
                                                                 </button>
                                                                 <button
                                                                     className="opacity-50"
                                                                     onClick={() => {
                                                                         setShowDeleteAlert(true)
-                                                                        setDeletingUser(user)
+                                                                        setOperatingUser(user)
                                                                     }}
                                                                 >
                                                                     <TrashIcon width="20" height="20"/>
@@ -136,6 +143,16 @@ const UsersIndex = () => {
                     onCreateUser={(newUser: UserModel) => {
                         setUsers([...users, newUser]);
                         setShowCreateModal(false);
+                    }}
+                />
+            }
+            {showUpdateModal &&
+                <UpdateUser
+                    user={operatingUser}
+                    onDismiss={() => setShowUpdateModal(false)}
+                    onCreateUser={(updatedUser: UserModel) => {
+                        setUsers(users.map(existingUser => existingUser._id === updatedUser._id ? updatedUser : existingUser));
+                        setShowUpdateModal(false);
                     }}
                 />
             }
