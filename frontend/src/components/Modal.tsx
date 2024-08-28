@@ -12,7 +12,7 @@ interface ModalComponentProps {
         form?: string,
         disabled: boolean,
         type?: "button" | "submit" | "reset",
-        isbuttonwithspinner?: boolean,
+        isbuttonwithspinner?: string,
     },
     cancelButton?: {
         text: string,

@@ -52,7 +52,7 @@ const UpdateUser = ({user, onDismiss, onCreateUser}: UpdateUserProps) => {
                 form: "updateUserForm",
                 disabled: isSubmitting,
                 type: "submit",
-                isbuttonwithspinner: true,
+                isbuttonwithspinner: "true",
             }}
             onDismiss={onDismiss}
             onConfirm={() => {}}
