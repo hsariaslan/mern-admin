@@ -4,6 +4,7 @@ import Dashboard from "../pages/Dashboard";
 import Login from "../features/auth/Login";
 import SignUp from "../features/auth/SignUp";
 import UsersIndex from "../features/users/index";
+import RolesIndex from "../features/roles/index";
 import PermissionsIndex from "../features/permissions/index";
 
 function App() {
@@ -20,6 +21,11 @@ function App() {
                 <Route path="/users" element={
                     <AuthMiddleware>
                         <UsersIndex />
+                    </AuthMiddleware>
+                }/>
+                <Route path="/roles" element={
+                    <AuthMiddleware>
+                        <RolesIndex />
                     </AuthMiddleware>
                 }/>
                 <Route path="/permissions" element={
